@@ -6,9 +6,21 @@ import random
 from io import BytesIO
 from bs4 import BeautifulSoup
 import json
+import rython
 
 entries = {}
-   
+def getStyleBibliography(biblioList):
+    ctx = rython.RubyContext(requires=["rubygems", "anystyle/parser"])
+    ctx("Encoding.default_internal = 'UTF-8'")
+    ctx("Encoding.default_external = 'UTF-8'")
+    anystyle = ctx("Anystyle.parser")
+    anyStyleList = []
+    h =  HTMLParser.HTMLParser()
+    for biblio in biblioList:
+        parsed = anystyle.parse((h.unescape(biblio).encode('utf-8')))
+        anyStyleList.append(parsed)
+    return anyStyleList
+
 def get_fn(auth):
     "Gets the first name, based on an author name string"
     fn_segment = auth[auth.find(',') + 1:]
@@ -51,9 +63,10 @@ def scrape(sepdir):
     body = buffer.getvalue()
 
     soup = BeautifulSoup(body.decode('iso-8859-1'),'html.parser')
-    
+    cites = []
     #For each citation in the bibliography
     for link in soup.find(id='bibliography').find_all('li'):
+        cites.append(link)
         #Text of the full citation
         link_str = (link.text).replace('\n', ' ')
         
@@ -117,6 +130,7 @@ def scrape(sepdir):
                 citations.append(citation)
     #Add this list of citations to the dictionary            
     entries[sepdir] = citations
+    print(getStyleBibliography(cites))
 
 #scapes a single entry, based on sepdir
 #THIS CAN BE CHANGED TO SCRAPE ALL PAGES
@@ -144,9 +158,4 @@ for sep, values in entries.items():
     print('Created: ', file_n)
     
 print('Complete')
-        
-        
-        
-        
-        
         
