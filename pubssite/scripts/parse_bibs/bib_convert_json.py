@@ -8,7 +8,7 @@ import pycurl
 citations = []
 
 def scrape(sepdir):
-    "Scrapes the bibliography of a single entry, by url"
+    "Scrapes the bibliography of a single entry, by sepdir, for each individual citation"
     url = 'https://plato.stanford.edu/entries/' + sepdir + '/'
     
     #scrape from url    
@@ -30,7 +30,7 @@ def scrape(sepdir):
 if len(sys.argv) < 3:
     print("Syntax: python bib_convert_json.py <json file name> <sepdir>")
     exit()
-        
+
 filename = sys.argv[1]
 print('Reading ', filename)
 fn = open(filename, 'rb')
