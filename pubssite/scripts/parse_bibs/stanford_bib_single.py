@@ -8,6 +8,7 @@ import json
 import rython
 import HTMLParser
 import sys
+import string
 
 #Object of a scraped bibliography with names, titles, full citations parsed
 class Scraped_Bib:
@@ -25,7 +26,10 @@ class Scraped_Bib:
         anyStyleList = []
         h =  HTMLParser.HTMLParser()
         for biblio in biblioList:
-            parsed = anystyle.parse((h.unescape(biblio.text.replace('\n','')).encode('utf-8')))[0]
+            text = biblio.text.replace('\n','').encode('utf-8')
+            printable = set(string.printable)
+            text = ''.join(filter(lambda x: x in printable, text))
+            parsed = anystyle.parse(text)[0]
             anyStyleList.append(parsed)
         return anyStyleList
 
@@ -34,7 +38,7 @@ class Scraped_Bib:
         namae = self.ctx("Namae")
         parsed = []
         try:
-            parsed = namae.parse(allNames)
+            parsed = namae.parse(allNames.encode('utf-8'))
         except Exception:
             print('Fault parsing names')
             parsed = [{'family':allNames}]
@@ -67,7 +71,10 @@ class Scraped_Bib:
                 names = self.getNames(components[i]['author'])
                 for nm in names:
                     entry = {}
-                    entry['full_citation'] = (citation.text).replace('\n', ' ')
+                    entry['full_citation'] = (citation.text).replace('\n', ' ').encode('utf-8')
+                    printable = set(string.printable)
+                    entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
+                    
 
                     if 'family' in nm:
                         entry['family_name'] = nm['family']
@@ -130,7 +137,7 @@ class Scraped_Bib:
             google_line = google_line + entry['family_name'] + '+'
             google_line = google_line + ((entry['title']).replace(' ', '+')) + '+'
             line = line + google_line + '\"\n'
-            csv.write(line.encode('utf-8'))
+            csv.write(line)
         
         print('Saved csv to ' + csv_file_name)
         csv.close() 
