@@ -32,7 +32,12 @@ class Scraped_Bib:
     def getNames(self, allNames):
         "Uses Namae to parse a set of names"
         namae = self.ctx("Namae")
-        parsed = namae.parse(allNames)
+        parsed = []
+        try:
+            parsed = namae.parse(allNames)
+        except  xmlrpclib.Fault:
+            print('Fault parsing names')
+            parsed = [{'family':allNames}]
         return parsed
     
     def scrape(self, sepdir):
