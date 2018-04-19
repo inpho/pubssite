@@ -4,7 +4,7 @@ import json
 json_file = open('stanford_data')
 entry_dictionary = json.loads(json_file.read())
 json_file.close()
-print(entries)
+print(entry_dictionary)
 
 for entry in entry_dictionary.values():
     bib = Scraped_Bib(entry['sepdir'])
