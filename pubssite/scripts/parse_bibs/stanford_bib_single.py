@@ -35,7 +35,7 @@ class Scraped_Bib:
         parsed = []
         try:
             parsed = namae.parse(allNames)
-        except  xmlrpclib.Fault:
+        except Exception:
             print('Fault parsing names')
             parsed = [{'family':allNames}]
         return parsed
