@@ -107,7 +107,7 @@ class Scraped_Bib:
         csv_file_name = self.sepdir + '_bib.csv'
         csv = open(csv_file_name, 'w')
         
-        first_line = 'Family Name, Given Name, Title, Full Citation, Google Link\n'
+        first_line = 'Family Name, Given Name, Gender,  Title, Full Citation, Google Link\n'
         csv.write(first_line)
         
         for entry in self.entries:
@@ -117,7 +117,7 @@ class Scraped_Bib:
             
             line = ''
             line = line + entry['family_name'] + ','
-            line = line + entry['given_name'] + ',\"'
+            line = line + entry['given_name'] + ',,\"'
             line = line + entry['title'] + '\",\"'
             line = line + entry['full_citation'] + '\",\"'
             google_line = 'https://www.google.com/search?q='
