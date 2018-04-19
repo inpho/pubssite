@@ -2,13 +2,12 @@ from stanford_bib_single import Scraped_Bib
 import json
 
 json_file = open('stanford_data')
-entries = json.loads(json_file.read())
+entry_dictionary = json.loads(json_file.read())
 json_file.close()
+print(entries)
 
-
-for sepdir in entries.keys():
-    print(sepdir)
-    bib = Scraped_Bib(sepdir)
+for entry in entry_dictionary.values():
+    bib = Scraped_Bib(entry['sepdir'])
     bib.save()
 
 print('Completed')
