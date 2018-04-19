@@ -1,4 +1,4 @@
-from stannford_bib_single import Scraped_Bib
+from stanford_bib_single import Scraped_Bib
 
 json_file = open('stanford_data')
 entries = json.loads(json_file.read())
