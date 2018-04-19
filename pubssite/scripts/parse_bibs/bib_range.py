@@ -7,6 +7,7 @@ json_file.close()
 
 
 for sepdir in entries.keys():
+    print(sepdir)
     bib = Scraped_Bib(sepdir)
     bib.save()
 
