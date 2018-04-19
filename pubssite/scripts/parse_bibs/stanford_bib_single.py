@@ -96,6 +96,9 @@ class Scraped_Bib:
             else:
                 entry = {}
                 entry['full_citation'] = (citation.text).replace('\n', ' ')
+                printable = set(string.printable)
+                entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
+                
                 entry['family_name'] = ''
                 entry['given_name'] = ''
                 if 'title' in components[i]:
