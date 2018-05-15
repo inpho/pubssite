@@ -9,6 +9,8 @@ import rython
 import HTMLParser
 import sys
 import string
+from unidecode import unidecode
+import warnings
 
 #Object of a scraped bibliography with names, titles, full citations parsed
 class Scraped_Bib:
@@ -26,9 +28,8 @@ class Scraped_Bib:
         anyStyleList = []
         h =  HTMLParser.HTMLParser()
         for biblio in biblioList:
-            text = biblio.text.replace('\n','').encode('utf-8')
-            printable = set(string.printable)
-            text = ''.join(filter(lambda x: x in printable, text))
+            text = biblio.text.replace('\n',' ')
+            text = unidecode(text)
             parsed = anystyle.parse(text)[0]
             anyStyleList.append(parsed)
         return anyStyleList
@@ -38,7 +39,7 @@ class Scraped_Bib:
         namae = self.ctx("Namae")
         parsed = []
         try:
-            parsed = namae.parse(allNames.encode('utf-8'))
+            parsed = namae.parse(unidecode(allNames))
         except Exception:
             print('Fault parsing names')
             parsed = [{'family':allNames}]
@@ -67,13 +68,16 @@ class Scraped_Bib:
         i = 0
         #For each citation in the bibliography
         for citation in soup.find(id='bibliography').find_all('li'):
+            warnings.filterwarnings("ignore")
             if 'author' in components[i].keys():
                 names = self.getNames(components[i]['author'])
                 for nm in names:
                     entry = {}
-                    entry['full_citation'] = (citation.text).replace('\n', ' ').encode('utf-8')
-                    printable = set(string.printable)
-                    entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
+                    entry['full_citation'] = (citation.text).replace('\n', ' ')
+                    entry['full_citation'] = unidecode(entry['full_citation'])
+                    
+                    #printable = set(string.printable)
+                    #entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
                     
 
                     if 'family' in nm:
@@ -96,8 +100,11 @@ class Scraped_Bib:
             else:
                 entry = {}
                 entry['full_citation'] = (citation.text).replace('\n', ' ')
-                printable = set(string.printable)
-                entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
+                
+                entry['full_citation'] = unidecode(entry['full_citation'])
+                
+                #printable = set(string.printable)
+                #entry['full_citation'] = ''.join(filter(lambda x: x in printable, entry['full_citation']))
                 
                 entry['family_name'] = ''
                 entry['given_name'] = ''
@@ -107,6 +114,7 @@ class Scraped_Bib:
                     entry['title'] = ''
                 entries.append(entry)
             i = i + 1
+        warnings.filterwarnings("default")
         return entries
     
     def save_json(self):
@@ -134,7 +142,7 @@ class Scraped_Bib:
             line = line + entry['family_name'] + ','
             line = line + entry['given_name'] + ',,\"'
             line = line + entry['title'] + '\",\"'
-            line = line + entry['full_citation'] + '\",\"'
+            line = line + entry['full_citation'].replace('\"', '') + '\",\"'
             google_line = 'https://www.google.com/search?q='
             google_line = google_line + entry['given_name'] + '+'
             google_line = google_line + entry['family_name'] + '+'
