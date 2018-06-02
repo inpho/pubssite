@@ -11,6 +11,7 @@ import sys
 import string
 from unidecode import unidecode
 import warnings
+import os
 
 #Object of a scraped bibliography with names, titles, full citations parsed
 class Scraped_Bib:
@@ -133,6 +134,7 @@ class Scraped_Bib:
     def save_csv(self):
         "Saves a CSV of the entries"
         csv_file_name = self.sepdir + '_bib.csv'
+        print(csv_file_name)
         csv = open(csv_file_name, 'w')
         
         first_line = 'Family Name, Given Name, Gender,  Title, Full Citation, Google Link\n'
@@ -160,7 +162,7 @@ class Scraped_Bib:
 
     def save(self):
         "Saves both a JSON and CSV"
-        self.save_json()
+        #self.save_json()
         self.save_csv()
         
 
@@ -179,14 +181,21 @@ class Scraped_Bib:
 if __name__ == '__main__':
     if len(sys.argv) > 1:
         for sepdir in sys.argv[1:]:
-            print('Scraping ' + sepdir + '...')
-            sb = Scraped_Bib(sepdir)
-            sb.save()
-            print('Complete')
+            try:
+                print('Scraping ' + sepdir + '...')
+                sb = Scraped_Bib(sepdir)
+                sb.save()
+                print('Complete')
+            except:
+                print('Error scraping ' + sepdir)
     else:
-        sepdir = input("sepdir to scrape: ")
-        print('Scraping ' + sepdir + '...')
-        sb = Scraped_Bib(sepdir)
-        sb.save()
-        print('Complete')
+        sepdirs = (str(raw_input("sepdir to scrape: "))).split(" ")
+        for sepdir in sepdirs:
+            print('Scraping ' + sepdir + '...')
+            try: 
+                sb = Scraped_Bib(sepdir)
+                sb.save()
+                print('Complete')
+            except:
+                print('Error scraping ' + sepdir)
         
