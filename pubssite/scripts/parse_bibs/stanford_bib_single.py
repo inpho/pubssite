@@ -184,5 +184,9 @@ if __name__ == '__main__':
             sb.save()
             print('Complete')
     else:
-        print('Syntax: python stanford_bib_single.py <sepdir>')
+        sepdir = input("sepdir to scrape: ")
+        print('Scraping ' + sepdir + '...')
+        sb = Scraped_Bib(sepdir)
+        sb.save()
+        print('Complete')
         
