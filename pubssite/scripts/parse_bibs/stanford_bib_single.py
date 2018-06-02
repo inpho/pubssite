@@ -27,11 +27,16 @@ class Scraped_Bib:
         anystyle = self.ctx("Anystyle.parser")
         anyStyleList = []
         h =  HTMLParser.HTMLParser()
+        i = 0
         for biblio in biblioList:
             text = biblio.text.replace('\n',' ')
             text = unidecode(text)
-            parsed = anystyle.parse(text)[0]
-            anyStyleList.append(parsed)
+            try:
+                parsed = anystyle.parse(text)[0]
+                anyStyleList.append(parsed)
+            except Exception:
+                print('Exception with entry: ' + text)
+                anyStyleList.append({})
         return anyStyleList
 
     def getNames(self, allNames):
@@ -141,12 +146,12 @@ class Scraped_Bib:
             line = ''
             line = line + entry['family_name'] + ','
             line = line + entry['given_name'] + ',,\"'
-            line = line + entry['title'] + '\",\"'
+            line = line + entry['title'].replace('\"', '') + '\",\"'
             line = line + entry['full_citation'].replace('\"', '') + '\",\"'
             google_line = 'https://www.google.com/search?q='
             google_line = google_line + entry['given_name'] + '+'
             google_line = google_line + entry['family_name'] + '+'
-            google_line = google_line + ((entry['title']).replace(' ', '+')) + '+'
+            google_line = google_line + ((entry['title']).replace(' ', '+')).replace('\"', '') + '+'
             line = line + google_line + '\"\n'
             csv.write(line)
         
@@ -172,12 +177,12 @@ class Scraped_Bib:
         return self.sepdir
 
 if __name__ == '__main__':
-    if len(sys.argv) == 2:
-        sepdir = sys.argv[1]
-        print('Scraping ' + sepdir + '...')
-        sb = Scraped_Bib(sepdir)
-        sb.save()
-        print('Complete')
+    if len(sys.argv) > 1:
+        for sepdir in sys.argv[1:]:
+            print('Scraping ' + sepdir + '...')
+            sb = Scraped_Bib(sepdir)
+            sb.save()
+            print('Complete')
     else:
         print('Syntax: python stanford_bib_single.py <sepdir>')
         
