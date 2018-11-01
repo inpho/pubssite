@@ -6,16 +6,16 @@ db = MySQLdb.connect("sql.inphoproject.org","inpho",pw,"pubs")
 
 cursor = db.cursor()
 
-sql = "SELECT authors.firstname, authors.lastname, authors.gender, citations.raw FROM pubs.authors JOIN pubs.author_of ON authors.author_id=author_of.author_id JOIN pubs.citations ON author_of.citation_id=citations.citation_id WHERE CHAR_LENGTH(citations.raw) > 0 GROUP BY author_of.author_id;"
+sql = "SELECT authors.firstname, authors.lastname, authors.gender, citations.raw, collections.collection_name FROM pubs.authors JOIN pubs.author_of ON authors.author_id=author_of.author_id JOIN pubs.citations ON author_of.citation_id=citations.citation_id JOIN pubs.member_of_collection ON citations.citation_id=member_of_collection.citation_id JOIN pubs.collections ON collections.collection_id=member_of_collection.collection_id WHERE CHAR_LENGTH(citations.raw) > 0 AND SUBSTRING(collection_name, 1, 3)='SEP' GROUP BY author_of.author_id;"
 
 cursor.execute(sql)
 results = cursor.fetchall()
 
 outFile = open("pubs_authors.csv", "w")
 
-outFile.write("FirstName,LastName,Gender,Citation\n")
+outFile.write("FirstName,LastName,Gender,Citation,Collection\n")
 for entry in results:
-    outFile.write("\"" + str(entry[0]) + "\",\"" + str(entry[1]) + "\",\"" + str(entry[2]) + "\",\"" + str(entry[3]).replace("\"", "") + "\"\n")
+    outFile.write("\"" + str(entry[0]) + "\",\"" + str(entry[1]) + "\",\"" + str(entry[2]) + "\",\"" + str(entry[3]).replace("\"", "") + "\",\"" + "https://plato.stanford.edu/entries/" + str(entry[4])[4:] + "/\"\n")
 
 outFile.close()
 db.close()
