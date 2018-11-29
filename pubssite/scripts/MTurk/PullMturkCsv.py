@@ -1,4 +1,5 @@
 import MySQLdb
+import codecs
 
 pw = str(input("Give the password for inpho@sql.inphoproject.org: "))
 
@@ -11,11 +12,11 @@ sql = "SELECT authors.firstname, authors.lastname, authors.gender, citations.raw
 cursor.execute(sql)
 results = cursor.fetchall()
 
-outFile = open("pubs_authors.csv", "w")
+outFile = codecs.open("pubs_authors.csv", "w", "utf-8")
 
 outFile.write("FirstName,LastName,Gender,Citation,Pubtype,Title,Collection\n")
 for entry in results:
-    outFile.write("\"" + str(entry[0]) + "\",\"" + str(entry[1]) + "\",\"" + str(entry[2]) + "\",\"" + str(entry[3]).replace("\"", "") + "\",\"" + str(entry[4]) + "\",\"" + str(entry[5]) + "\",\"" + "https://plato.stanford.edu/entries/" + str(entry[6])[4:] + "/\"\n")
+    outFile.write("\"" + str(entry[0]).replace("\"", "\"\"") + "\",\"" + str(entry[1]).replace("\"", "\"\"") + "\",\"" + str(entry[2]).replace("\"", "\"\"") + "\",\"" + str(entry[3]).replace("\"", "\"\"") + "\",\"" + str(entry[4]).replace("\"", "\"\"") + "\",\"" + str(entry[5]).replace("\"", "\"\"") + "\",\"" + "https://plato.stanford.edu/entries/" + str(entry[6])[4:].replace("\"", "\"\"") + "/\"\n")
 
 outFile.close()
 db.close()
