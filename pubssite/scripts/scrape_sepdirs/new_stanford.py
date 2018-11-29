@@ -1,3 +1,5 @@
+# DEPRECATED! - all functionality offered by this is now offered by scrape_collections.py
+# By Pat Healy
 # goal to scrape https://plato.stanford.edu/new.html
 
 import pycurl

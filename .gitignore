@@ -8,3 +8,4 @@ pubsenv
 pubs.ini
 .pubs-site.git
 dispatch.wsgi
+.DS_Store
