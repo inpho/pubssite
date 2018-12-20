@@ -1,6 +1,8 @@
-# Patrick Healy
-# Last Updated 11/27/18
+# Patrick Healy - pat.healy@pitt.edu
+# Last Updated 12/20/18
 # goal to scrape https://plato.stanford.edu/published.html
+# adds all new SEP articles to the pubs database
+# adds empty collections_update entries for every new collection, too
 
 import pycurl
 from io import BytesIO
@@ -185,7 +187,7 @@ def add_new_collections():
         cursor.execute(sql)
         db.commit()
         
-        sql = "INSERT INTO pubs.collections_update (fk_collections_id, revision_date) VALUES (LAST_INSERT_ID(),\'" + addition[1] + "\');"
+        sql = "INSERT INTO pubs.collections_update (fk_collections_id) VALUES (LAST_INSERT_ID());"
         cursor.execute(sql)
         db.commit()
         print("Added: " + addition[0])
@@ -212,8 +214,8 @@ if __name__ == '__main__':
     save_data()
     set_unsafe()
     add_new_collections();
-    update_collections();
+    #update_collections();
     
     print("\n====================================================================\n")
-    print("All other entries updated\n")
+    #print("All other entries updated\n")
     print('Complete')
